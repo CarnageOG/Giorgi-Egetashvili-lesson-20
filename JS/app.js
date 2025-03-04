@@ -17,12 +17,13 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-
 function sliderFn() {
     const slides = document.querySelectorAll(".slide");
     const next = document.querySelector(".next");
     const prev = document.querySelector(".prev");
+    const images = document.querySelectorAll(".slide img");
     let currentSlide = 0;
+    let interval;
 
     function renderSlides() {
         slides.forEach((slide, index) => {
@@ -34,46 +35,38 @@ function sliderFn() {
         });
     }
 
-    // renderSlides();
-
     function goToNextSlide() {
-        if (currentSlide === slides.length - 1) {
-            currentSlide = 0;
-        } else {
-            currentSlide++;
-        }
+        currentSlide = (currentSlide === slides.length - 1) ? 0 : currentSlide + 1;
         renderSlides();
     }
 
     function goToPreSlide() {
-        if (currentSlide === 0) {
-            currentSlide = slides.length - 1;
-        } else {
-            currentSlide--;
-        }
+        currentSlide = (currentSlide === 0) ? slides.length - 1 : currentSlide - 1;
         renderSlides();
+    }
+
+    function startAutoSlide() {
+        interval = setInterval(goToNextSlide, 5000);
+    }
+
+    function stopAutoSlide() {
+        clearInterval(interval);
     }
 
     next.addEventListener("click", goToNextSlide);
     prev.addEventListener("click", goToPreSlide);
 
-    // setInterval(goToNextSlide, 5000);
-
     document.addEventListener("keyup", (e) => {
-        console.log("key up", e);
-        if (e.code === "ArrowRight") {
-            goToNextSlide();
-        }
-        if (e.code === "ArrowLeft") {
-            goToPreSlide();
-        }
+        if (e.code === "ArrowRight") goToNextSlide();
+        if (e.code === "ArrowLeft") goToPreSlide();
     });
-    // document.addEventListener("keydown", (e) => {
-    //  console.log("key down", e);
-    // });
-    // document.addEventListener("keypress", (e) => {
-    //  console.log("key press", e);
-    // });
+
+    images.forEach(img => {
+        img.addEventListener("mouseenter", stopAutoSlide);
+        img.addEventListener("mouseleave", startAutoSlide);
+    });
+
+    startAutoSlide();
 }
 
 sliderFn();
